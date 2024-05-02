@@ -25,7 +25,7 @@ runs:
     - name: Enable maintenance mode
       uses: cloudflare/wrangler-action@v3
       with:
-        apiToken: ${{ inputs.cludflare-token }}
+        apiToken: ${{ inputs.cloudflare-token }}
         accountId: ${{ inputs.cloudflare-account-id }}
         command: "kv:key put MAINTENANCE_PAGE_ENABLED true --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
       if: ${{ inputs.command == 'enable' }}
@@ -33,7 +33,7 @@ runs:
     - name: Disable maintenance mode
       uses: cloudflare/wrangler-action@v3
       with:
-        apiToken: ${{ inputs.cludflare-token }}
+        apiToken: ${{ inputs.cloudflare-token }}
         accountId: ${{ inputs.cloudflare-account-id }}
         command: "kv:key delete MAINTENANCE_PAGE_ENABLED --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
       if: ${{ inputs.command == 'disable' }}
