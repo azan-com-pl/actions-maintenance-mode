@@ -14,3 +14,11 @@ It will:
         cloudflare-kv-namespace-id: ${{ vars.CLOUDFLARE_KV_NAMESPACE_ID }}
         command: enable
 ```
+
+## Testing commands
+
+```bash
+cp .envrc.sample .envrc
+./enable.sh
+./disable.sh
+```
