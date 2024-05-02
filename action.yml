@@ -22,18 +22,25 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Enable maintenance mode
-      uses: cloudflare/wrangler-action@v3
-      with:
-        apiToken: ${{ inputs.cloudflare-token }}
-        accountId: ${{ inputs.cloudflare-account-id }}
-        command: "kv:key put MAINTENANCE_PAGE_ENABLED true --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
+    - name: Set MAINTENANCE_PAGE_ENABLED KV key to enable maintenance mode
+      shell: bash
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare-token }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
+      run: |
+        curl -X PUT "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${CLOUDFLARE_KV_NAMESPACE_ID}/values/MAINTENANCE_PAGE_ENABLED" \
+          -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+          -H "Content-Type: application/json" \
+          --data-raw '{"value": "true"}'
       if: ${{ inputs.command == 'enable' }}
 
-    - name: Disable maintenance mode
-      uses: cloudflare/wrangler-action@v3
-      with:
-        apiToken: ${{ inputs.cloudflare-token }}
-        accountId: ${{ inputs.cloudflare-account-id }}
-        command: "kv:key delete MAINTENANCE_PAGE_ENABLED --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
+    - name: Delete MAINTENANCE_PAGE_ENABLED KV key to disable maintenance mode
+      shell: bash
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare-token }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
+      run: |
+        curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${CLOUDFLARE_KV_NAMESPACE_ID}/values/MAINTENANCE_PAGE_ENABLED" \
+          -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+          -H "Content-Type: application/json"
       if: ${{ inputs.command == 'disable' }}
