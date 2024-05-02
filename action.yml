@@ -1,0 +1,33 @@
+name: 'Maintenance mode'
+
+description: 'Manage maintenance mode status'
+
+inputs:
+  cloudflare-token:
+    description: 'Cloudflare API token for enabling maintenance mode'
+    required: true
+
+  cloudflare-kv-namespace-id:
+    description: 'Cloudflare KV namespace ID for MAINTENANCE_PAGE_ENABLED flag'
+    required: true
+
+  command:
+    description: "Command to execute. Either 'enable' or 'disable'"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Enable maintenance mode
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ inputs.cludflare-token }}
+        command: "kv:key put MAINTENANCE_PAGE_ENABLED true --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
+      if: ${{ inputs.command == 'enable' }}
+
+    - name: Disable maintenance mode
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ inputs.cludflare-token }}
+        command: "kv:key delete MAINTENANCE_PAGE_ENABLED --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
+      if: ${{ inputs.command == 'disable' }}
