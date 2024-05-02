@@ -28,5 +28,5 @@ runs:
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
         CLOUDFLARE_KV_NAMESPACE_ID: ${{ inputs.cloudflare-kv-namespace-id }}
       shell: bash
-      run: "${{ inputs.command }}.sh"
+      run: "./${{ inputs.command }}.sh"
       working-directory: ${{ github.action_path }}
