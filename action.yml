@@ -27,13 +27,15 @@ runs:
       env:
         CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare-token }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
+        CLOUDFLARE_KV_NAMESPACE_ID: ${{ inputs.cloudflare-kv-namespace-id }}
       run: |
         curl --request PUT \
           "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${CLOUDFLARE_KV_NAMESPACE_ID}/values/MAINTENANCE_PAGE_ENABLED" \
-          -f -s -S \
+          --fail-with-body -s -S \
           -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
           --header 'Content-Type: multipart/form-data' \
-          --form 'value=true' 2>&1
+          --form 'value=true' \
+          --form 'metadata='
       if: ${{ inputs.command == 'enable' }}
 
     - name: Delete MAINTENANCE_PAGE_ENABLED KV key to disable maintenance mode
@@ -41,10 +43,11 @@ runs:
       env:
         CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare-token }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}
+        CLOUDFLARE_KV_NAMESPACE_ID: ${{ inputs.cloudflare-kv-namespace-id }}
       run: |
         curl --request DELETE \
           "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/storage/kv/namespaces/${CLOUDFLARE_KV_NAMESPACE_ID}/values/MAINTENANCE_PAGE_ENABLED" \
-          -f -s -S \
+          --fail-with-body -s -S \
           -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-          -H "Content-Type: application/json" 2>&1
+          -H "Content-Type: application/json"
       if: ${{ inputs.command == 'disable' }}
