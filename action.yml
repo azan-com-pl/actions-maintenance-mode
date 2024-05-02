@@ -7,6 +7,10 @@ inputs:
     description: 'Cloudflare API token for enabling maintenance mode'
     required: true
 
+  cloudflare-account-id:
+    description: 'Cloudflare account ID'
+    required: true
+
   cloudflare-kv-namespace-id:
     description: 'Cloudflare KV namespace ID for MAINTENANCE_PAGE_ENABLED flag'
     required: true
@@ -22,6 +26,7 @@ runs:
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ inputs.cludflare-token }}
+        accountId: ${{ inputs.cloudflare-account-id }}
         command: "kv:key put MAINTENANCE_PAGE_ENABLED true --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
       if: ${{ inputs.command == 'enable' }}
 
@@ -29,5 +34,6 @@ runs:
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ inputs.cludflare-token }}
+        accountId: ${{ inputs.cloudflare-account-id }}
         command: "kv:key delete MAINTENANCE_PAGE_ENABLED --namespace-id=${{ inputs.cloudflare-kv-namespace-id }}"
       if: ${{ inputs.command == 'disable' }}
